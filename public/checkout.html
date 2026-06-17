@@ -9,8 +9,8 @@
 <body>
 
 <nav class="navbar">
-  <a href="/" class="brand">🎓 Student Pay</a>
-  <a href="/">← Home</a>
+  <a href="/checkout" class="brand">🎓 Student Pay</a>
+  <a href="/admin">Admin</a>
 </nav>
 
 <div class="spinner-overlay" id="spinner-overlay">
@@ -50,12 +50,12 @@
       <div class="form-group">
         <label for="amount">Amount (BDT) *</label>
         <input type="number" id="amount" class="form-control" value="500" min="1" required />
-        <small style="color:var(--text-muted);">Default: 500 BDT. পরিবর্তন করতে পারবেন।</small>
+        <small style="color:var(--text-muted);">Default: 500 BDT। পরিবর্তন করতে পারবেন।</small>
       </div>
       <div class="form-group">
         <label for="payment-method">Payment Method *</label>
         <select id="payment-method" class="form-control">
-          <option value="bkash">bKash (via UddoktaPay)</option>
+          <option value="bkash">bKash</option>
         </select>
       </div>
       <button type="submit" class="btn btn-primary btn-block" id="pay-btn">
@@ -63,6 +63,16 @@
       </button>
     </form>
   </div>
+</div>
+
+<!-- Developer Credit -->
+<div style="text-align:center; padding: 2.5rem 1rem 1.5rem;">
+  <p style="font-size:1.1rem; color:var(--text-muted); letter-spacing:0.5px;">
+    Developed by
+  </p>
+  <p style="font-size:1.5rem; font-weight:700; color:var(--primary); margin-top:0.3rem;">
+    Mohammad Shoriful Islam
+  </p>
 </div>
 
 <script src="/js/main.js"></script>
@@ -89,7 +99,6 @@
     showLoading('Payment তৈরি হচ্ছে...');
 
     try {
-      // ✅ Netlify function endpoint
       const response = await fetch('/api/create-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -111,5 +120,6 @@
     }
   });
 </script>
+
 </body>
 </html>
