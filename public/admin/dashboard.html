@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="/" class="brand">🎓 Student Pay</a>
+  <div>
+    <span id="admin-email" style="color:rgba(255,255,255,0.8); font-size:0.9rem;"></span>
+    <button onclick="handleLogout()" class="btn btn-outline"
+      style="margin-left:1rem; padding:0.4rem 1rem; font-size:0.85rem; color:white; border-color:white;">
+      Logout
+    </button>
+  </div>
+</nav>
+
+<div class="container" style="margin-top:1.5rem;">
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-value" id="total-count">—</div>
+      <div class="stat-label">Total Payments</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="total-amount">—</div>
+      <div class="stat-label">Total Collected (BDT)</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="dash-header">
+      <h2 style="color:var(--primary);">📋 Payment Records</h2>
+      <button onclick="exportCSV()" class="btn btn-success" style="padding:0.5rem 1.25rem;">
+        ⬇ Export CSV
+      </button>
+    </div>
+
+    <!-- Search -->
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="🔍 Search by name, roll, or TRX ID..."
+        oninput="filterTable()" />
+      <select id="sort-select" class="form-control" style="max-width:180px;" onchange="sortTable()">
+        <option value="newest">Newest First</option>
+        <option value="oldest">Oldest First</option>
+        <option value="amount-high">Amount: High → Low</option>
+        <option value="amount-low">Amount: Low → High</option>
+      </select>
+    </div>
+
+    <div class="alert" id="alert-box"></div>
+
+    <div class="table-wrapper">
+      <table id="payments-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Roll</th>
+            <th>Amount (BDT)</th>
+            <th>Department</th>
+            <th>TRX ID</th>
+            <th>Date / Time</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <tr><td colspan="8" style="text-align:center; padding:2rem; color:var(--text-muted);">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase Client SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut }
+    from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+  import { getDatabase, ref, onValue }
+    from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC2CVm57dXE35XSogbX-YSGxIJy46KaA0c",
+    authDomain: "student-verify.firebaseapp.com",
+    projectId: "student-verify",
+    storageBucket: "student-verify.firebasestorage.app",
+    messagingSenderId: "165426055484",
+    appId: "1:165426055484:web:0ac70c2cc1781995543639",
+    databaseURL: "https://student-verify-default-rtdb.firebaseio.com"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  // All payments data (for filtering/sorting)
+  window._allPayments = [];
+
+  // ── Auth Guard ──────────────────────────────────────────────────────────────
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = '/admin';
+      return;
+    }
+    document.getElementById('admin-email').textContent = user.email;
+    loadPayments();
+  });
+
+  // ── Logout ──────────────────────────────────────────────────────────────────
+  window.handleLogout = async () => {
+    await signOut(auth);
+    window.location.href = '/admin';
+  };
+
+  // ── Load Payments from Firebase ─────────────────────────────────────────────
+  function loadPayments() {
+    const paymentsRef = ref(db, 'payments');
+    onValue(paymentsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (!data) {
+        window._allPayments = [];
+        renderTable([]);
+        updateStats([]);
+        return;
+      }
+      // Convert object to array
+      const payments = Object.values(data);
+      window._allPayments = payments;
+      sortAndRender();
+    }, (err) => {
+      document.getElementById('alert-box').className = 'alert alert-danger show';
+      document.getElementById('alert-box').textContent = '❌ Failed to load payments: ' + err.message;
+    });
+  }
+
+  // ── Render Table ────────────────────────────────────────────────────────────
+  window.renderTable = function(payments) {
+    const tbody = document.getElementById('table-body');
+    if (!payments || payments.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:2rem; color:var(--text-muted);">No payments found.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = payments.map((p, i) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td><strong>${escHtml(p.name)}</strong></td>
+        <td>${escHtml(p.roll)}</td>
+        <td><strong>৳ ${p.amount}</strong></td>
+        <td>${escHtml(p.department)}</td>
+        <td style="font-family:monospace; font-size:0.85rem;">${escHtml(p.trxId)}</td>
+        <td>${formatDate(p.timestamp)}</td>
+        <td><span class="badge badge-success">✓ Paid</span></td>
+      </tr>
+    `).join('');
+    updateStats(payments);
+  };
+
+  // ── Update Stats ────────────────────────────────────────────────────────────
+  window.updateStats = function(payments) {
+    document.getElementById('total-count').textContent = payments.length;
+    const total = payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+    document.getElementById('total-amount').textContent = '৳ ' + total.toLocaleString();
+  };
+
+  // ── Filter ──────────────────────────────────────────────────────────────────
+  window.filterTable = function() {
+    const q = document.getElementById('search-input').value.toLowerCase();
+    const filtered = window._allPayments.filter(p =>
+      (p.name || '').toLowerCase().includes(q) ||
+      (p.roll || '').toLowerCase().includes(q) ||
+      (p.trxId || '').toLowerCase().includes(q)
+    );
+    renderTable(filtered);
+  };
+
+  // ── Sort ────────────────────────────────────────────────────────────────────
+  window.sortTable = function() {
+    sortAndRender();
+  };
+
+  function sortAndRender() {
+    const sort = document.getElementById('sort-select').value;
+    let sorted = [...window._allPayments];
+    if (sort === 'newest') sorted.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    else if (sort === 'oldest') sorted.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    else if (sort === 'amount-high') sorted.sort((a, b) => b.amount - a.amount);
+    else if (sort === 'amount-low') sorted.sort((a, b) => a.amount - b.amount);
+    renderTable(sorted);
+  }
+
+  // ── CSV Export ──────────────────────────────────────────────────────────────
+  window.exportCSV = function() {
+    const payments = window._allPayments;
+    if (!payments.length) { alert('No data to export.'); return; }
+    const headers = ['Name', 'Roll', 'Amount (BDT)', 'Department', 'TRX ID', 'Date/Time'];
+    const rows = payments.map(p => [
+      `"${p.name || ''}"`, `"${p.roll || ''}"`, p.amount || 0,
+      `"${p.department || ''}"`, `"${p.trxId || ''}"`, `"${formatDate(p.timestamp)}"`
+    ]);
+    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'payments.csv'; a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // ── Helpers ─────────────────────────────────────────────────────────────────
+  function formatDate(iso) {
+    if (!iso) return 'N/A';
+    return new Date(iso).toLocaleString('en-BD', {
+      year: 'numeric', month: 'short', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', hour12: true
+    });
+  }
+  function escHtml(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+</script>
+
+</body>
+</html>

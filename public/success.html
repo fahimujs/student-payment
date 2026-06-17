@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Successful</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="/" class="brand">🎓 Student Pay</a>
+</nav>
+
+<div class="container-sm">
+  <div class="card result-page">
+    <div class="result-icon">✅</div>
+    <h1 style="color:var(--success);">Payment Successful!</h1>
+    <p>Your payment has been verified and recorded. Please save your TRX ID for reference.</p>
+
+    <div class="detail-box">
+      <div class="detail-row">
+        <span>Name</span>
+        <span id="d-name">—</span>
+      </div>
+      <div class="detail-row">
+        <span>Roll</span>
+        <span id="d-roll">—</span>
+      </div>
+      <div class="detail-row">
+        <span>Department</span>
+        <span id="d-dept">—</span>
+      </div>
+      <div class="detail-row">
+        <span>Amount Paid</span>
+        <span id="d-amount" style="color:var(--success); font-size:1.1rem;">—</span>
+      </div>
+      <div class="detail-row">
+        <span>TRX ID</span>
+        <span id="d-trx" style="color:var(--primary); word-break:break-all;">—</span>
+      </div>
+    </div>
+
+    <a href="/" class="btn btn-success">🏠 Back to Home</a>
+  </div>
+</div>
+
+<script src="/js/main.js"></script>
+<script>
+  // Read query params and populate the detail box
+  document.getElementById('d-name').textContent = getParam('name') || 'N/A';
+  document.getElementById('d-roll').textContent = getParam('roll') || 'N/A';
+  document.getElementById('d-dept').textContent = getParam('department') || 'N/A';
+  document.getElementById('d-amount').textContent = 'BDT ' + (getParam('amount') || '0');
+  document.getElementById('d-trx').textContent = getParam('trxId') || 'N/A';
+</script>
+
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Failed</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="/" class="brand">🎓 Student Pay</a>
+</nav>
+
+<div class="container-sm">
+  <div class="card result-page">
+    <div class="result-icon">❌</div>
+    <h1 style="color:var(--danger);">Payment Failed</h1>
+    <p>Your payment was not completed or was cancelled. No amount has been deducted. Please try again.</p>
+
+    <div class="detail-box" id="reason-box" style="display:none;">
+      <div class="detail-row">
+        <span>Reason</span>
+        <span id="d-reason" style="color:var(--danger);">—</span>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; margin-top:1rem;">
+      <a href="/checkout" class="btn btn-primary">🔄 Try Again</a>
+      <a href="/" class="btn btn-outline">🏠 Home</a>
+    </div>
+  </div>
+</div>
+
+<script src="/js/main.js"></script>
+<script>
+  const reason = getParam('reason');
+  const reasonMap = {
+    'missing_invoice': 'Invoice ID missing from callback.',
+    'not_completed': 'Payment was not completed by the gateway.',
+    'verification_failed': 'Payment verification failed. Please contact support.',
+  };
+  if (reason && reasonMap[reason]) {
+    document.getElementById('reason-box').style.display = 'block';
+    document.getElementById('d-reason').textContent = reasonMap[reason];
+  }
+</script>
+
+</body>
+</html>
