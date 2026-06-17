@@ -3,7 +3,7 @@ const admin = require("firebase-admin");
 
 const UDDOKTAPAY_BASE_URL = "https://shorifulislam.paymently.io/api";
 const UDDOKTAPAY_API_KEY = "FM5AKGENbOXZxNgMn5ofpqmIi3rI0nNVFHaqHcfG";
-const YOUR_SITE = "https://magenta-stardust-b22a2f.netlify.app";
+const YOUR_SITE = "https://my-payment-web.netlify.app";
 
 // Firebase init
 function initFirebase() {
