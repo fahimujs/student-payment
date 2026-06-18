@@ -1,8 +1,8 @@
 const axios = require("axios");
 const admin = require("firebase-admin");
 
-const UDDOKTAPAY_BASE_URL = "https://paysi.unaux.com/api";
-const UDDOKTAPAY_API_KEY = "17907580336a33e4e30527368089122413416226636a33e4e3052762007295289";
+const UDDOKTAPAY_BASE_URL = "https://shorifulislam.paymently.io/api";
+const UDDOKTAPAY_API_KEY = "FM5AKGENbOXZxNgMn5ofpqmIi3rI0nNVFHaqHcfG";
 const YOUR_SITE = "https://my-payment-web.netlify.app";
 
 // Firebase init
