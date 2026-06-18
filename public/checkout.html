@@ -3,80 +3,191 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Checkout - Student Payment</title>
+  <title>Student Payment</title>
   <link rel="stylesheet" href="/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 </head>
 <body>
 
-<nav class="navbar">
-  <a href="/checkout" class="brand">🎓 Student Pay</a>
-  <a href="/admin">Admin</a>
-</nav>
-
 <div class="spinner-overlay" id="spinner-overlay">
   <div class="spinner"></div>
-  <p id="spinner-msg">Redirecting to payment...</p>
+  <p id="spinner-msg" style="color:#6366f1; font-weight:600; margin-top:1rem;">Processing Payment...</p>
 </div>
 
-<div class="container-sm" style="margin-top:2rem;">
-  <div class="card">
-    <h2 style="margin-bottom:1.5rem; color:var(--primary);">💳 Payment Checkout</h2>
-    <div class="alert" id="alert-box"></div>
+<!-- Header -->
+<nav class="top-nav">
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <span class="brand-icon">🎓</span>
+      <span>Student<strong>Pay</strong></span>
+    </div>
+    <a href="/admin" class="nav-admin-btn">🔐 Admin</a>
+  </div>
+</nav>
 
-    <form id="checkout-form" novalidate>
-      <div class="form-group">
-        <label for="name">Full Name *</label>
-        <input type="text" id="name" class="form-control" placeholder="Enter your full name" required />
+<!-- Main -->
+<div class="page-wrapper">
+  <div class="checkout-grid">
+
+    <!-- Left: Info -->
+    <div class="info-panel">
+      <div class="info-badge">Secure Payment Portal</div>
+      <h1 class="info-title">Pay Your<br/>Student Fee</h1>
+      <p class="info-sub">Fast, secure and verified payment system for students.</p>
+
+      <div class="info-features">
+        <div class="feature-item">
+          <span class="feature-icon">⚡</span>
+          <div>
+            <strong>Instant Verification</strong>
+            <p>Payment verified in real-time</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">🔒</span>
+          <div>
+            <strong>100% Secure</strong>
+            <p>Encrypted & safe transactions</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">📱</span>
+          <div>
+            <strong>Mobile Banking</strong>
+            <p>bKash, Nagad & Rocket supported</p>
+          </div>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="roll">Roll Number *</label>
-        <input type="text" id="roll" class="form-control" placeholder="e.g. 2021-ET-001" required />
+
+      <!-- Payment logos -->
+      <div class="payment-logos">
+        <div class="pay-logo bkash-logo">
+          <span>b</span>Kash
+        </div>
+        <div class="pay-logo nagad-logo">
+          <span>N</span>agad
+        </div>
+        <div class="pay-logo rocket-logo">
+          <span>R</span>ocket
+        </div>
       </div>
-      <div class="form-group">
-        <label for="department">Department *</label>
-        <select id="department" class="form-control" required>
-          <option value="">-- Select Department --</option>
-          <option value="ET">ET - Electronics Technology</option>
-          <option value="CSE">CSE - Computer Science & Engineering</option>
-          <option value="EEE">EEE - Electrical & Electronic Engineering</option>
-          <option value="ECE">ECE - Electronics & Communication Engineering</option>
-          <option value="ME">ME - Mechanical Engineering</option>
-          <option value="CE">CE - Civil Engineering</option>
-          <option value="TE">TE - Textile Engineering</option>
-          <option value="BBA">BBA - Business Administration</option>
-          <option value="English">English</option>
-        </select>
+    </div>
+
+    <!-- Right: Form -->
+    <div class="form-panel">
+      <div class="form-card">
+        <h2 class="form-title">Payment Details</h2>
+        <p class="form-sub">Fill in your information to proceed</p>
+
+        <div class="alert" id="alert-box"></div>
+
+        <form id="checkout-form" novalidate>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">
+                <span class="label-icon">👤</span> Full Name
+              </label>
+              <input type="text" id="name" class="form-control" placeholder="Enter your full name" required />
+            </div>
+            <div class="form-group">
+              <label for="roll">
+                <span class="label-icon">🎫</span> Roll Number
+              </label>
+              <input type="text" id="roll" class="form-control" placeholder="e.g. 2021-ET-001" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="department">
+              <span class="label-icon">🏛️</span> Department
+            </label>
+            <select id="department" class="form-control" required>
+              <option value="">-- Select Your Department --</option>
+              <option value="ET">ET — Electronics Technology</option>
+              <option value="CSE">CSE — Computer Science & Engineering</option>
+              <option value="EEE">EEE — Electrical & Electronic Engineering</option>
+              <option value="ECE">ECE — Electronics & Communication Engineering</option>
+              <option value="ME">ME — Mechanical Engineering</option>
+              <option value="CE">CE — Civil Engineering</option>
+              <option value="TE">TE — Textile Engineering</option>
+              <option value="BBA">BBA — Business Administration</option>
+              <option value="English">English</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="amount">
+              <span class="label-icon">💵</span> Amount (BDT)
+            </label>
+            <div class="amount-wrapper">
+              <span class="amount-prefix">৳</span>
+              <input type="number" id="amount" class="form-control amount-input" value="10" min="1" required />
+            </div>
+            <small class="hint-text">Default: ৳10 BDT — you can change this</small>
+          </div>
+
+          <div class="form-group">
+            <label><span class="label-icon">💳</span> Payment Method</label>
+            <div class="method-grid">
+              <label class="method-card selected" data-value="bkash">
+                <input type="radio" name="method" value="bkash" checked hidden />
+                <div class="method-logo bkash-logo-sm">b</div>
+                <span>bKash</span>
+                <span class="method-check">✓</span>
+              </label>
+              <label class="method-card" data-value="nagad">
+                <input type="radio" name="method" value="nagad" hidden />
+                <div class="method-logo nagad-logo-sm">N</div>
+                <span>Nagad</span>
+                <span class="method-check">✓</span>
+              </label>
+              <label class="method-card" data-value="rocket">
+                <input type="radio" name="method" value="rocket" hidden />
+                <div class="method-logo rocket-logo-sm">R</div>
+                <span>Rocket</span>
+                <span class="method-check">✓</span>
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" class="pay-btn" id="pay-btn">
+            <span id="btn-text">🔒 Pay Now</span>
+          </button>
+
+        </form>
+
+        <p class="secure-note">🛡️ Your payment is secured by UddoktaPay</p>
       </div>
-      <div class="form-group">
-        <label for="amount">Amount (BDT) *</label>
-        <input type="number" id="amount" class="form-control" value="500" min="1" required />
-        <small style="color:var(--text-muted);">Default: 500 BDT। পরিবর্তন করতে পারবেন।</small>
-      </div>
-      <div class="form-group">
-        <label for="payment-method">Payment Method *</label>
-        <select id="payment-method" class="form-control">
-          <option value="bkash">bKash</option>
-        </select>
-      </div>
-      <button type="submit" class="btn btn-primary btn-block" id="pay-btn">
-        🔒 Pay Now
-      </button>
-    </form>
+    </div>
+
   </div>
 </div>
 
 <!-- Developer Credit -->
-<div style="text-align:center; padding: 2.5rem 1rem 1.5rem;">
-  <p style="font-size:1.1rem; color:var(--text-muted); letter-spacing:0.5px;">
-    Developed by
-  </p>
-  <p style="font-size:1.5rem; font-weight:700; color:var(--primary); margin-top:0.3rem;">
-    Mohammad Shoriful Islam
-  </p>
-</div>
+<footer class="dev-footer">
+  <div class="dev-inner">
+    <div class="dev-line"></div>
+    <div class="dev-content">
+      <span class="dev-label">Developed & Designed by</span>
+      <span class="dev-name">Mohammad Shoriful Islam</span>
+    </div>
+    <div class="dev-line"></div>
+  </div>
+</footer>
 
 <script src="/js/main.js"></script>
 <script>
+  // Payment method selection
+  document.querySelectorAll('.method-card').forEach(card => {
+    card.addEventListener('click', function() {
+      document.querySelectorAll('.method-card').forEach(c => c.classList.remove('selected'));
+      this.classList.add('selected');
+      this.querySelector('input[type="radio"]').checked = true;
+    });
+  });
+
+  // Form submit
   document.getElementById('checkout-form').addEventListener('submit', async function(e) {
     e.preventDefault();
     hideAlert('alert-box');
@@ -87,16 +198,19 @@
     const amount = document.getElementById('amount').value;
 
     if (!name || !roll || !department || !amount) {
-      showAlert('alert-box', '⚠️ সব ঘর পূরণ করুন।', 'danger');
+      showAlert('alert-box', '⚠️ Please fill in all required fields.', 'danger');
       return;
     }
     if (parseFloat(amount) <= 0) {
-      showAlert('alert-box', '⚠️ Amount অবশ্যই 0 এর বেশি হতে হবে।', 'danger');
+      showAlert('alert-box', '⚠️ Amount must be greater than 0.', 'danger');
       return;
     }
 
-    document.getElementById('pay-btn').disabled = true;
-    showLoading('Payment তৈরি হচ্ছে...');
+    const btn = document.getElementById('pay-btn');
+    const btnText = document.getElementById('btn-text');
+    btn.disabled = true;
+    btnText.textContent = '⏳ Processing...';
+    showLoading('Redirecting to payment gateway...');
 
     try {
       const response = await fetch('/api/create-payment', {
@@ -108,18 +222,18 @@
       const data = await response.json();
 
       if (!response.ok || !data.payment_url) {
-        throw new Error(data.error || 'Payment তৈরি করা যায়নি।');
+        throw new Error(data.error || 'Payment initiation failed.');
       }
 
       window.location.href = data.payment_url;
 
     } catch (err) {
       hideLoading();
-      document.getElementById('pay-btn').disabled = false;
+      btn.disabled = false;
+      btnText.textContent = '🔒 Pay Now';
       showAlert('alert-box', '❌ ' + err.message, 'danger');
     }
   });
 </script>
-
 </body>
 </html>
