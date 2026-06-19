@@ -1,7 +1,7 @@
 const axios = require("axios");
 const admin = require("firebase-admin");
 
-const UDDOKTAPAY_BASE_URL = "https://epay.corp.com.bd/pay.php";
+const UDDOKTAPAY_BASE_URL = "epay.corp.com.bd/users/paylink.php";
 const UDDOKTAPAY_API_KEY = "5a4aa89f6f00267e18df124f2ca8e347202a2b0eb2b812682a6109eac4c8177e";
 const YOUR_SITE = "https://my-payment-web.netlify.app";
 
